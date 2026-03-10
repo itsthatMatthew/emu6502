@@ -1,5 +1,5 @@
-#include "../types.hpp"
-#include "../memory.hpp"
+#include "../common/types.hpp"
+#include "../common/memory.hpp"
 #include <functional>
 
 using processor_status = types::byte;
@@ -35,32 +35,50 @@ enum addressing_modes {
 #define INSTRUCTION(name, mode) template<> void mos6502::name<mode>()
 
 struct mos6502 {
+  void execute(std::function<void()> attached = nullptr);
+
+//private:
   struct cpu_registers {
-    types::byte A;
+    types::word PC;
+    types::byte AC;
     types::byte X;
     types::byte Y;
-    types::byte S;
-    types::address PC;
-    processor_status P;
+    processor_status SR;
+    types::byte SP;
   } registers;
 
-  types::byte& A = registers.A;
+  types::word& PC = registers.PC;
+  types::byte& AC = registers.AC;
   types::byte& X = registers.X;
   types::byte& Y = registers.Y;
-  types::byte& S = registers.S;
-  types::address& PC = registers.PC;
-  processor_status& P = registers.P;
+  processor_status& SR = registers.SR;
+  types::byte& SP = registers.SP;
+
+  static constexpr types::word STACK_PAGE = 0x01 << 8;
+  static constexpr types::word NMI_LB = 0xFFFA;
+  static constexpr types::word NMI_HB = 0xFFFB;
+  static constexpr types::word RES_LB = 0xFFFC;
+  static constexpr types::word RES_HB = 0xFFFD;
+  static constexpr types::word IRQ_LB = 0xFFFE;
+  static constexpr types::word IRQ_HB = 0xFFFF;
 
   i_memory& m_memory;
-  mos6502(i_memory& memory) : m_memory(memory) {}
+  mos6502(i_memory& memory);
 
-  constexpr void set_flag(bool condition, processor_status_flags flag) {
-    if (condition) P |= flag;
-    else P &= ~flag;
-  }
+  void set_flag(processor_status_flags flag, bool condition);
+  [[nodiscard]] processor_status get_flag(processor_status_flags flag) const;
 
-  void execute(std::function<void()> attached = nullptr);
-  types::byte fetch_next() { return m_memory[PC++]; }
+  void push_stack(types::byte value);
+  [[nodiscard]] types::byte pop_stack();
+
+  [[nodiscard]] types::byte fetch_next_byte();
+  [[nodiscard]] types::word fetch_next_address();
+
+  template<addressing_modes mode>
+  [[nodiscard]] types::byte fetch();
+  template<addressing_modes mode>
+  void store(types::byte data);
+
   void execute_next();
 
   DECLARE(ADC);
@@ -303,3 +321,22 @@ INSTRUCTION(STX, ABSOLUTE);
 INSTRUCTION(STY, ZERO_PAGE);
 INSTRUCTION(STY, ZERO_PAGE_X);
 INSTRUCTION(STY, ABSOLUTE);
+
+template<> [[nodiscard]] types::byte mos6502::fetch<IMMEDIATE>();
+template<> [[nodiscard]] types::byte mos6502::fetch<ZERO_PAGE>();
+template<> [[nodiscard]] types::byte mos6502::fetch<ZERO_PAGE_X>();
+template<> [[nodiscard]] types::byte mos6502::fetch<ZERO_PAGE_Y>();
+template<> [[nodiscard]] types::byte mos6502::fetch<ABSOLUTE>();
+template<> [[nodiscard]] types::byte mos6502::fetch<ABSOLUTE_X>();
+template<> [[nodiscard]] types::byte mos6502::fetch<ABSOLUTE_Y>();
+template<> [[nodiscard]] types::byte mos6502::fetch<INDIRECT_X>();
+template<> [[nodiscard]] types::byte mos6502::fetch<INDIRECT_Y>();
+
+template<> void mos6502::store<ZERO_PAGE>(types::byte data);
+template<> void mos6502::store<ZERO_PAGE_X>(types::byte data);
+template<> void mos6502::store<ZERO_PAGE_Y>(types::byte data);
+template<> void mos6502::store<ABSOLUTE>(types::byte data);
+template<> void mos6502::store<ABSOLUTE_X>(types::byte data);
+template<> void mos6502::store<ABSOLUTE_Y>(types::byte data);
+template<> void mos6502::store<INDIRECT_X>(types::byte data);
+template<> void mos6502::store<INDIRECT_Y>(types::byte data);

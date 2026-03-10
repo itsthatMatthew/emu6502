@@ -11,7 +11,7 @@ void mos6502::execute(std::function<void()> attached) {
 
 void mos6502::execute_next() {
   // https://en.wikipedia.org/wiki/MOS_Technology_6502#Instruction_table
-  const types::byte opcode = fetch_next();
+  const types::byte opcode = fetch_next_byte();
   switch (opcode) {
     CASE(0x00, BRK, IMPLIED);
     CASE(0x10, BPL, RELATIVE);
