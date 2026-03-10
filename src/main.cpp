@@ -27,7 +27,7 @@ int main() {
   memory[0xE002] = 0x69; // ADC #$01 ; Add 1 to the accumulator
   memory[0xE003] = 0x01; //
   memory[0xE004] = 0x8D; // STA $E00A ; Store the accumulator's value at memory
-  memory[0xE005] = 0x0A; //           ; location 0xE00A (zp, observe on 4.c.)
+  memory[0xE005] = 0x0A; //           ; location 0xE00A
   memory[0xE006] = 0xE0; //
   memory[0xE007] = 0x4C; // JMP $E002 ; jump back to adding 1 to the accumulator
   memory[0xE008] = 0x02; //
