@@ -1,13 +1,14 @@
 #include "../mos6502.hpp"
 
 INSTRUCTION(BRK, IMPLIED) {
-  const types::byte low = fetch_next();
-  const types::byte high = fetch_next();
-  const processor_status flags = P | 0b00110000;
+  const types::word address = PC + 2;
+  const types::byte low = address & 0xFF;
+  const types::byte high = (address >> 8) & 0xFF;
+  const processor_status flags = SR | 0b00110000;
 
-  m_memory[S++] = high;
-  m_memory[S++] = low;
-  m_memory[S++] = flags;
+  push_stack(high);
+  push_stack(low);
+  push_stack(flags);
 
-  PC = 0xFFFE;
+  PC = m_memory[IRQ_LB] + (m_memory[IRQ_HB] << 8);
 }

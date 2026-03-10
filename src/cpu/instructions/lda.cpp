@@ -1,11 +1,10 @@
 #include "../mos6502.hpp"
 
 INSTRUCTION(LDA, IMMEDIATE) {
-  const types::byte result = fetch_next();
-  A = result;
-
-  set_flag(result == 0, Z);
-  set_flag(result & 0x80, N);
+  const types::byte result = fetch_next_byte();
+  set_flag(Z, result == 0);
+  set_flag(N, result & 0x80);
+  AC = result;
 }
 
 INSTRUCTION(LDA, ZERO_PAGE) { throw "Not yet implemented operation"; }
