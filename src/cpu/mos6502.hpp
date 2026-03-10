@@ -30,8 +30,10 @@ enum addressing_modes {
   RELATIVE
 };
 
+#define UNSUPPORTED_ADDRESSING_MODE \
+  static_assert(false, "Unsupported addressing mode")
 #define DECLARE(name) template<addressing_modes mode> void name() \
-  { static_assert(false, "Unsupported addressing mode"); }
+  { UNSUPPORTED_ADDRESSING_MODE; }
 #define INSTRUCTION(name, mode) template<> void mos6502::name<mode>()
 
 struct mos6502 {
@@ -75,9 +77,9 @@ struct mos6502 {
   [[nodiscard]] types::word fetch_next_address();
 
   template<addressing_modes mode>
-  [[nodiscard]] types::byte fetch();
+  [[noreturn]] types::byte fetch() { UNSUPPORTED_ADDRESSING_MODE; }
   template<addressing_modes mode>
-  void store(types::byte data);
+  void store(types::byte data) { UNSUPPORTED_ADDRESSING_MODE; }
 
   void execute_next();
 
