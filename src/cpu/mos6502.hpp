@@ -56,7 +56,7 @@ struct mos6502 {
   processor_status& SR = registers.SR;
   types::byte& SP = registers.SP;
 
-  static constexpr types::word STACK_PAGE = 0x01 << 8;
+  static constexpr types::word STACK_PAGE = 0x0100;
   static constexpr types::word NMI_LB = 0xFFFA;
   static constexpr types::word NMI_HB = 0xFFFB;
   static constexpr types::word RES_LB = 0xFFFC;
