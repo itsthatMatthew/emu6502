@@ -45,7 +45,7 @@ int main() {
     static size_t cycle = 1;
     printf("\n%lu. cycle\n", cycle++);
 
-    printf("[[CPU]]\n");
+    printf("[CPU]\n");
     printf("  AC [0x%02X]\n", cpu.AC);
     printf("  X  [0x%02X]\n", cpu.X);
     printf("  Y  [0x%02X]\n", cpu.Y);
@@ -53,14 +53,14 @@ int main() {
     printf("  PC [0x%04X]\n", cpu.PC);
     printf("  SR [0x%02X]\n", cpu.SR);
     
-    printf("[[STACK]]\n");
+    printf("[STACK]\n");
     constexpr int stack_eps = 3;
     for (int idx = std::max<int>(0, cpu.SP - stack_eps); idx <= std::min<int>(255, cpu.SP + stack_eps); idx++) {
       if (idx == cpu.SP) printf ("> "); else printf("  ");
       printf("[0x%04X] 0x%02X\n", idx + (0x01 << 8), memory[idx + (0x01 << 8)]);
     }
 
-    printf("[[PROGRAM]]\n");
+    printf("[PROGRAM]\n");
     constexpr int program_eps = 5;
     for (int idx = std::max<int>(0, cpu.PC - program_eps); idx <= std::min<int>(MEMSIZE - 1, cpu.PC + program_eps); idx++) {
       if (idx == cpu.PC) printf ("> "); else printf("  ");
