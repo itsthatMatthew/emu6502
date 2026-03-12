@@ -1,7 +1,30 @@
 #include "../../mos6502.hpp"
 
-INSTRUCTION(ROR, ACCUMULATOR) { throw "Not yet implemented operation"; }
-INSTRUCTION(ROR, ZERO_PAGE) { throw "Not yet implemented operation"; }
-INSTRUCTION(ROR, ZERO_PAGE_X) { throw "Not yet implemented operation"; }
-INSTRUCTION(ROR, ABSOLUTE) { throw "Not yet implemented operation"; }
-INSTRUCTION(ROR, ABSOLUTE_X) { throw "Not yet implemented operation"; }
+static void ror(mos6502& cpu, types::byte& value) {
+  const bool carry = value & 1;
+  value >>= 1;
+  value |= cpu.get_flag(C) << 7;
+  cpu.set_flag(C, carry);
+  cpu.set_flag(Z, value == 0);
+  cpu.set_flag(N, value & 0x80);
+}
+
+INSTRUCTION(ROR, ACCUMULATOR) {
+  ror(*this, AC);
+}
+
+INSTRUCTION(ROR, ZERO_PAGE) {
+  ror(*this, m_memory[fetch_next_byte()]);
+}
+
+INSTRUCTION(ROR, ZERO_PAGE_X) {
+  ror(*this, m_memory[(fetch_next_byte() + X) % 256]);
+}
+
+INSTRUCTION(ROR, ABSOLUTE) {
+  ror(*this, m_memory[fetch_next_address()]);
+}
+
+INSTRUCTION(ROR, ABSOLUTE_X) {
+  ror(*this, m_memory[fetch_next_address() + X]);
+}

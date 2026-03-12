@@ -1,5 +1,11 @@
 #include "../../mos6502.hpp"
 
-INSTRUCTION(STX, ZERO_PAGE) { throw "Not yet implemented operation"; }
-INSTRUCTION(STX, ZERO_PAGE_Y) { throw "Not yet implemented operation"; }
-INSTRUCTION(STX, ABSOLUTE) { throw "Not yet implemented operation"; }
+INSTRUCTION(STX, ZERO_PAGE) {
+  store<ZERO_PAGE>(X);
+}
+INSTRUCTION(STX, ZERO_PAGE_Y) {
+  store<ZERO_PAGE_Y>(X);
+}
+INSTRUCTION(STX, ABSOLUTE) {
+  store<ABSOLUTE>(X);
+}

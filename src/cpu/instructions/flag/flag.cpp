@@ -1,9 +1,29 @@
 #include "../../mos6502.hpp"
 
-INSTRUCTION(CLC, IMPLIED) { throw "Not yet implemented operation"; }
-INSTRUCTION(CLD, IMPLIED) { throw "Not yet implemented operation"; }
-INSTRUCTION(CLI, IMPLIED) { throw "Not yet implemented operation"; }
-INSTRUCTION(CLV, IMPLIED) { throw "Not yet implemented operation"; }
-INSTRUCTION(SEC, IMPLIED) { throw "Not yet implemented operation"; }
-INSTRUCTION(SED, IMPLIED) { throw "Not yet implemented operation"; }
-INSTRUCTION(SEI, IMPLIED) { throw "Not yet implemented operation"; }
+INSTRUCTION(CLC, IMPLIED) {
+  set_flag(C, false);
+}
+
+INSTRUCTION(CLD, IMPLIED) {
+  set_flag(D, false);
+}
+
+INSTRUCTION(CLI, IMPLIED) {
+  set_flag(I, false);
+}
+
+INSTRUCTION(CLV, IMPLIED) {
+  set_flag(V, false);
+}
+
+INSTRUCTION(SEC, IMPLIED) {
+  set_flag(C, true);
+}
+
+INSTRUCTION(SED, IMPLIED) {
+  set_flag(D, true);
+}
+
+INSTRUCTION(SEI, IMPLIED) {
+  set_flag(I, true);
+}

@@ -1,16 +1,39 @@
 #include "../../mos6502.hpp"
 
-INSTRUCTION(LDA, IMMEDIATE) {
-  const types::byte result = fetch_next_byte();
-  set_flag(Z, result == 0);
-  set_flag(N, result & 0x80);
-  AC = result;
+static void lda(mos6502& cpu, types::byte memory) {
+  cpu.AC = memory;
+  cpu.set_flag(Z, cpu.AC == 0);
+  cpu.set_flag(N, cpu.AC & 0x80);
 }
 
-INSTRUCTION(LDA, ZERO_PAGE) { throw "Not yet implemented operation"; }
-INSTRUCTION(LDA, ZERO_PAGE_X) { throw "Not yet implemented operation"; }
-INSTRUCTION(LDA, ABSOLUTE) { throw "Not yet implemented operation"; }
-INSTRUCTION(LDA, ABSOLUTE_X) { throw "Not yet implemented operation"; }
-INSTRUCTION(LDA, ABSOLUTE_Y) { throw "Not yet implemented operation"; }
-INSTRUCTION(LDA, INDIRECT_X) { throw "Not yet implemented operation"; }
-INSTRUCTION(LDA, INDIRECT_Y) { throw "Not yet implemented operation"; }
+INSTRUCTION(LDA, IMMEDIATE) {
+  lda(*this, fetch<IMMEDIATE>());
+}
+
+INSTRUCTION(LDA, ZERO_PAGE) {
+  lda(*this, fetch<ZERO_PAGE>());
+}
+
+INSTRUCTION(LDA, ZERO_PAGE_X) {
+  lda(*this, fetch<ZERO_PAGE_X>());
+}
+
+INSTRUCTION(LDA, ABSOLUTE) {
+  lda(*this, fetch<ABSOLUTE>());
+}
+
+INSTRUCTION(LDA, ABSOLUTE_X) {
+  lda(*this, fetch<ABSOLUTE_X>());
+}
+
+INSTRUCTION(LDA, ABSOLUTE_Y) {
+  lda(*this, fetch<ABSOLUTE_Y>());
+}
+
+INSTRUCTION(LDA, INDIRECT_X) {
+  lda(*this, fetch<INDIRECT_X>());
+}
+
+INSTRUCTION(LDA, INDIRECT_Y) {
+  lda(*this, fetch<INDIRECT_Y>());
+}

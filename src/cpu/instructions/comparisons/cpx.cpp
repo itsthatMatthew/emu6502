@@ -1,5 +1,19 @@
 #include "../../mos6502.hpp"
 
-INSTRUCTION(CPX, IMMEDIATE) { throw "Not yet implemented operation"; }
-INSTRUCTION(CPX, ZERO_PAGE) { throw "Not yet implemented operation"; }
-INSTRUCTION(CPX, ABSOLUTE) { throw "Not yet implemented operation"; }
+static void cmp(mos6502& cpu, types::byte memory) {
+  cpu.set_flag(C, cpu.X >= memory);
+  cpu.set_flag(Z, cpu.X == memory);
+  cpu.set_flag(N, (cpu.X - memory) & 0x80);
+}
+
+INSTRUCTION(CPX, IMMEDIATE) {
+  cmp(*this, fetch<IMMEDIATE>());
+}
+
+INSTRUCTION(CPX, ZERO_PAGE) {
+  cmp(*this, fetch<ZERO_PAGE>());
+}
+
+INSTRUCTION(CPX, ABSOLUTE) {
+  cmp(*this, fetch<ABSOLUTE>());
+}

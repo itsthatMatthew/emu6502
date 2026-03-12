@@ -1,10 +1,39 @@
 #include "../../mos6502.hpp"
 
-INSTRUCTION(EOR, IMMEDIATE) { throw "Not yet implemented operation"; }
-INSTRUCTION(EOR, ZERO_PAGE) { throw "Not yet implemented operation"; }
-INSTRUCTION(EOR, ZERO_PAGE_X) { throw "Not yet implemented operation"; }
-INSTRUCTION(EOR, ABSOLUTE) { throw "Not yet implemented operation"; }
-INSTRUCTION(EOR, ABSOLUTE_X) { throw "Not yet implemented operation"; }
-INSTRUCTION(EOR, ABSOLUTE_Y) { throw "Not yet implemented operation"; }
-INSTRUCTION(EOR, INDIRECT_X) { throw "Not yet implemented operation"; }
-INSTRUCTION(EOR, INDIRECT_Y) { throw "Not yet implemented operation"; }
+static void eor(mos6502& cpu, types::byte memory) {
+  cpu.AC ^= memory;
+  cpu.set_flag(Z, cpu.AC == 0);
+  cpu.set_flag(N, cpu.AC & 0x80);
+}
+
+INSTRUCTION(EOR, IMMEDIATE) {
+  eor(*this, fetch<IMMEDIATE>());
+}
+
+INSTRUCTION(EOR, ZERO_PAGE) {
+  eor(*this, fetch<ZERO_PAGE>());
+}
+
+INSTRUCTION(EOR, ZERO_PAGE_X) {
+  eor(*this, fetch<ZERO_PAGE_X>());
+}
+
+INSTRUCTION(EOR, ABSOLUTE) {
+  eor(*this, fetch<ABSOLUTE>());
+}
+
+INSTRUCTION(EOR, ABSOLUTE_X) {
+  eor(*this, fetch<ABSOLUTE_X>());
+}
+
+INSTRUCTION(EOR, ABSOLUTE_Y) {
+  eor(*this, fetch<ABSOLUTE_Y>());
+}
+
+INSTRUCTION(EOR, INDIRECT_X) {
+  eor(*this, fetch<INDIRECT_X>());
+}
+
+INSTRUCTION(EOR, INDIRECT_Y) {
+  eor(*this, fetch<INDIRECT_Y>());
+}
